@@ -32,7 +32,12 @@ const userSchema = new Schema(
       type: String,
       required: [true, 'Must have Description'],
       minlength: [20, 'Should hvae at least 20 characters']
-    }
+    },
+    role: {
+      type: String,
+      enum: ['OWNER', 'USER', 'ADMIN'],
+      default: 'USER'
+    },
   },
   {
     timestamps: true
