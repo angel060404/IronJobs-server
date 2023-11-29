@@ -7,7 +7,7 @@ router.get('/getAllOffers', (req, res, next) => {
     Offer
         .find()
         .sort({ title: 1 })
-        .select({ title: 1, owner: 1, salary: 1, location: 1, type: 1, occupation: 1 })
+        .select({ title: 1, owner: 1, salary: 1, location: 1, type: 1, occupation: 1, imageUrl: 1, description: 1 })
         .then(response => res.json(response))
         .catch(err => next(err))
 })
