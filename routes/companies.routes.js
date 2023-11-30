@@ -1,5 +1,6 @@
 const express = require('express')
 const Company = require('../models/Company.model')
+const { verifyToken } = require('../middlewares/verifyToken')
 const router = express.Router()
 
 router.get('/', (req, res, next) => {
@@ -26,12 +27,13 @@ router.get('/getOneCompany/:company_id', (req, res, next) => {
         .catch(err => next(err))
 })
 
-router.post('/cerateCompany', (req, res, next) => {
+router.post('/createCompany', verifyToken, (req, res, next) => {
 
-    const { email, name, website, fiels, phoneNumber, image, description, } = req.body
-    const { owner } = req.session.currentUser
+    const { email, name, website, field, phoneNumber, image, description, } = req.body
+    const { _id: owner } = req.payload
+
     Company
-        .create({ owner, email, name, website, fiels, phoneNumber, image, description })
+        .create({ owner, email, name, website, field, phoneNumber, image, description })
         .then(response => res.json(response))
         .catch(err => next(err))
 })

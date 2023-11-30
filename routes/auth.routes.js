@@ -5,6 +5,7 @@ const bycrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 const User = require('./../models/User.model')
+const { verifyToken } = require('../middlewares/verifyToken')
 const saltRounds = 10
 
 router.post('/sign-up', (req, res, next) => {
@@ -67,6 +68,25 @@ router.post('/log-in', (req, res, next) => {
             } else {
                 res.status(401).json({ message: 'incorrect password' })
             }
+        })
+        .catch(err => next(err))
+})
+
+router.get('/verify', verifyToken, (req, res, next) => {
+
+    const loggedUser = req.payload
+
+    res.json({ loggedUser })
+})
+
+router.get('/:user_id', (req, res, next) => {
+
+    const { user_id } = req.params
+
+    User
+        .findById(user_id)
+        .then((foundedUser) => {
+            res.json(foundedUser)
         })
         .catch(err => next(err))
 })

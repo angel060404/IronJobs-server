@@ -54,7 +54,11 @@ const userSchema = new Schema(
       type: Number,
       min: [18, 'Only for people older than 18 '],
       required: true
-    }
+    },
+    companies: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Company'
+    }]
   },
   {
     timestamps: true
