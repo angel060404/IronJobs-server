@@ -1,5 +1,6 @@
 module.exports = app => {
 
+    // TODO: DESACOPLAR CONTROLADORES
     const offersRoutes = require("./offers.routes");
     app.use("/api/offers", offersRoutes)
 

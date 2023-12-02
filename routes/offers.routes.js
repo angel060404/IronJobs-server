@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const Offer = require('../models/Offer.model')
+const { verifyToken } = require('../middlewares/verifyToken')
+const Company = require('../models/Company.model')
 
 router.get('/getAllOffers', (req, res, next) => {
 
@@ -21,18 +23,34 @@ router.get('/getOneOffer/:offer_id', (req, res, next) => {
         .then(response => res.json(response))
         .catch(err => next(err))
 })
-router.post('/saveOffer', (req, res, next) => {
 
-    const { title, occupation, description, salary, latitude, longitude, type, duration, imageUrl } = req.body
-    const owner = req.session.currentUser
+router.post('/saveOffer', verifyToken, (req, res, next) => {
+
+    const { title, occupation, description, salary, latitude, longitude, type, duration, company } = req.body
+    const { _id: owner } = req.payload
     const location = {
         type: "Point",
         coordinates: [longitude, latitude]
     }
 
-    Offer
-        .create({ title, occupation, description, salary, location, type, duration, owner, imageUrl })
-        .then(response => res.json(response))
+    Company
+        .findById(company)
+        .then(companyData => companyData.image)
+        .then(imageUrl => Offer.create({
+            occupation,
+            title,
+            description,
+            owner,
+            company,
+            salary,
+            location,
+            type,
+            duration,
+            imageUrl
+        }))
+        .then(() => res.sendStatus(201))
         .catch(err => next(err))
 })
+
+
 module.exports = router

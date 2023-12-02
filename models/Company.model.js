@@ -38,7 +38,8 @@ const companySchema = new Schema(
         },
         description: {
             type: String,
-            minlength: [20, 'You must describe properly your company']
+            minlength: [20, 'You must describe properly your company'],
+            maxlength: [160, 'Only 160 characters']
 
         },
         owner: {

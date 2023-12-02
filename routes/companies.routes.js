@@ -2,11 +2,7 @@ const express = require('express')
 const Company = require('../models/Company.model')
 const { verifyToken } = require('../middlewares/verifyToken')
 const router = express.Router()
-
-router.get('/', (req, res, next) => {
-    res.json('HOLAAAA')
-})
-
+const User = require('./../models/User.model')
 
 router.get('/getAllCompanies', (req, res, next) => {
 
@@ -34,7 +30,8 @@ router.post('/createCompany', verifyToken, (req, res, next) => {
 
     Company
         .create({ owner, email, name, website, field, phoneNumber, image, description })
-        .then(response => res.json(response))
+        .then(data => User.findByIdAndUpdate(owner, { $push: { companies: data._id } }))
+        .then(() => res.sendStatus(201))
         .catch(err => next(err))
 })
 

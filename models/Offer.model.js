@@ -8,14 +8,19 @@ const offerSchema = new Schema(
         },
         occupation: {
             type: String,
-            requires: [true, 'Write a occupation']
+            required: [true, 'Write a occupation']
         },
         description: {
             type: String,
             required: true,
-            minlength: [20, 'THe description should have at least 20 characters']
+            minlength: [20, 'THe description should have at least 20 characters'],
+            maxlength: [160, 'Only 160 characters']
         },
         owner: {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        company: {
             type: Schema.Types.ObjectId,
             ref: 'Company'
         },
@@ -30,6 +35,7 @@ const offerSchema = new Schema(
         location: {
             type: {
                 type: String,
+                required: true
             },
             coordinates: {
                 type: [Number],
