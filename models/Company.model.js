@@ -45,7 +45,10 @@ const companySchema = new Schema(
         owner: {
             type: Schema.Types.ObjectId,
             required: [true, 'should have a owner']
-        }
+        },
+        offers: [{
+            type: Schema.Types.ObjectId
+        }]
     },
     {
         timestamps: true

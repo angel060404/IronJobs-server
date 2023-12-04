@@ -3,12 +3,13 @@ const Company = require('../models/Company.model')
 const { verifyToken } = require('../middlewares/verifyToken')
 const router = express.Router()
 const User = require('./../models/User.model')
+const { checkRole } = require('../middlewares/checkRole')
 
 router.get('/getAllCompanies', (req, res, next) => {
 
     Company
         .find()
-        .select({ name: 1, image: 1, field: 1, description: 1 })
+        .select({ name: 1, image: 1, field: 1, description: 1, owner: 1 })
         .then(response => res.json(response))
         .catch(err => next(err))
 })
@@ -29,9 +30,21 @@ router.post('/createCompany', verifyToken, (req, res, next) => {
     const { _id: owner } = req.payload
 
     Company
-        .create({ owner, email, name, website, field, phoneNumber, image, description })
-        .then(data => User.findByIdAndUpdate(owner, { $push: { companies: data._id } }))
+        .create({ email, owner, name, website, field, phoneNumber, image, description })
+        .then(data => User.findByIdAndUpdate(owner, { $push: { companies: data._id }, role: 'OWNER' }))
         .then(() => res.sendStatus(201))
+        .catch(err => next(err))
+})
+
+router.delete('/deleteCompany/:company_id', verifyToken, checkRole('ADMIN', 'OWNER'), (req, res, next) => {
+
+    const { company_id } = req.params
+    const { _id: owner } = req.payload
+
+    Company
+        .findByIdAndDelete(company_id)
+        .then(() => User.findByIdAndUpdate(owner, { $pull: { companies: company_id } }))
+        .then(() => res.sendStatus(200))
         .catch(err => next(err))
 })
 

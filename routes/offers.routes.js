@@ -36,21 +36,33 @@ router.post('/saveOffer', verifyToken, (req, res, next) => {
     Company
         .findById(company)
         .then(companyData => companyData.image)
-        .then(imageUrl => Offer.create({
-            occupation,
-            title,
-            description,
-            owner,
-            company,
-            salary,
-            location,
-            type,
-            duration,
-            imageUrl
-        }))
+        .then(imageUrl => {
+            return (Offer.create({
+                occupation,
+                title,
+                description,
+                owner,
+                company,
+                salary,
+                location,
+                type,
+                duration,
+                imageUrl
+            }))
+        })
+        .then(offerCreated => Company.findByIdAndUpdate(company, { $push: { offers: offerCreated._id } }))
         .then(() => res.sendStatus(201))
         .catch(err => next(err))
 })
 
+router.delete('/deleteOffer/:offer_id', (req, res, next) => {
+
+    const { offer_id } = req.params
+
+    Offer
+        .findById(offer_id)
+        .then(response => Company.findByIdAndUpdate(response.company, { $pull: { offers: offer_id } }))
+        .catch
+})
 
 module.exports = router
