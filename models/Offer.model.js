@@ -4,7 +4,8 @@ const offerSchema = new Schema(
     {
         title: {
             type: String,
-            required: [true, 'Should have a Title']
+            required: [true, 'Should have a Title'],
+            minlength: [3, 'Min 3 characters']
         },
         occupation: {
             type: String,
@@ -13,7 +14,7 @@ const offerSchema = new Schema(
         description: {
             type: String,
             required: true,
-            minlength: [20, 'THe description should have at least 20 characters'],
+            minlength: [20, 'The description should have at least 20 characters'],
             maxlength: [160, 'Only 160 characters']
         },
         owner: {

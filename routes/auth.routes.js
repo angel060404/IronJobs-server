@@ -29,8 +29,10 @@ router.post('/sign-up', (req, res, next) => {
 
             return User.create({ age, email, password: hashedPassword, name, avatar, description })
         })
-        .then((ceratedUser) => res.json(ceratedUser))
-        //  res.sendStatus(201))
+        .then((ceratedUser) => {
+            res.json(ceratedUser)
+            res.sendStatus(201)
+        })
         .catch(err => next(err))
 
 })

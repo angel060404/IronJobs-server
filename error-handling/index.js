@@ -9,7 +9,7 @@ module.exports = (app) => {
     }
 
     if (err.name === 'ValidationError') {
-      let errorMessages = Object.values(err.errors).map(el => el.message)
+      let errorMessages = Object.values(err.errors).map(elm => elm.message)
       res.status(400).json({ errorMessages })
     }
 

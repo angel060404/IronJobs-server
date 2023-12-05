@@ -4,6 +4,7 @@ const { verifyToken } = require('../middlewares/verifyToken')
 const router = express.Router()
 const User = require('./../models/User.model')
 const { checkRole } = require('../middlewares/checkRole')
+const Offer = require('../models/Offer.model')
 
 router.get('/getAllCompanies', (req, res, next) => {
 
@@ -43,7 +44,19 @@ router.delete('/deleteCompany/:company_id', verifyToken, checkRole('ADMIN', 'OWN
 
     Company
         .findByIdAndDelete(company_id)
-        .then(() => User.findByIdAndUpdate(owner, { $pull: { companies: company_id } }))
+        .then(() => User.findOneAndUpdate({ companies: company_id }, { $pull: { companies: company_id } }))
+        .then(() => Offer.findOneAndDelete({ company: company_id }))
+        .then(() => res.sendStatus(200))
+        .catch(err => next(err))
+})
+
+router.put('/updateCompany/:company_id', verifyToken, checkRole('ADMIN', 'OWNER'), (req, res, next) => {
+
+    const { company_id } = req.params
+    const { email, name, website, field, phoneNumber, image, description, } = req.body
+
+    Company
+        .findByIdAndUpdate(company_id, { email, name, website, field, phoneNumber, image, description, })
         .then(() => res.sendStatus(200))
         .catch(err => next(err))
 })
