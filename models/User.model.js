@@ -1,6 +1,5 @@
 const { Schema, model } = require("mongoose");
 
-// TODO: Please make sure you edit the User model to whatever makes sense in this case
 const userSchema = new Schema(
   {
     name: {
@@ -33,7 +32,7 @@ const userSchema = new Schema(
       type: String,
       validate: {
         validator: function (value) {
-          return value.includes('.jpg' || '.png');
+          return value.includes('.jpg' || '.png' || '.jpeg');
         },
         message: 'must be a png or jpg'
       }
