@@ -1,6 +1,7 @@
 const Company = require('../models/Company.model')
 const User = require('./../models/User.model')
 const Offer = require('../models/Offer.model')
+const validator = require('validator');
 
 const getCompanies = (req, res, next) => {
 
@@ -17,6 +18,7 @@ const oneCompany = (req, res, next) => {
 
     Company
         .findById(company_id)
+        .populate('offers')
         .then(response => res.json(response))
         .catch(err => next(err))
 }
